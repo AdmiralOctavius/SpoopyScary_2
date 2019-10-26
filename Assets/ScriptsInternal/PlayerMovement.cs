@@ -62,7 +62,7 @@ public class PlayerMovement : MonoBehaviour
                 {
                     if(results[i].tag == "Enemy")
                     {
-                        //Debug.Log(results[i].name);
+                        Debug.Log(results[i].name);
                         results[i].gameObject.GetComponent<EnemyScript>().Stunned(stunPower);
                     }
 

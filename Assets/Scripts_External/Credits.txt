@@ -1,2 +1,7 @@
 https://youtu.be/dwcT-Dch0bA
 Massive thanks to brackeys
+
+
+Unity has 2d lighting now!
+https://docs.unity3d.com/Packages/com.unity.render-pipelines.lightweight@6.7/manual/2DLightProperties.html
+https://youtu.be/nkgGyO9VG54
