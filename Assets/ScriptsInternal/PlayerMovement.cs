@@ -10,10 +10,17 @@ public class PlayerMovement : MonoBehaviour
     float runSpeed = 40f;
     float horizontalMove = 0f;
     bool isJumping = false;
-    bool isCrouching = false;
+    public bool isCrouching = false;
+
+    public GameObject cameraFlash;
+     
+    Collider2D[] results = new Collider2D[5];
+    ContactFilter2D baseFilter;
     // Start is called before the first frame update
     void Start()
     {
+        baseFilter.NoFilter();
+        baseFilter.
         
     }
 
@@ -36,6 +43,24 @@ public class PlayerMovement : MonoBehaviour
         else if (Input.GetButtonUp("Crouch"))
         {
             isCrouching = false;
+        }
+
+        if (Input.GetButtonDown("CameraClick"))
+        {
+            cameraFlash.GetComponent<Collider2D>().OverlapCollider(baseFilter, results);
+
+            for(int i = 0; i < results.Length; i++)
+            {
+                if(results.GetValue(i) != null)
+                {
+                    if(results[i].tag == "Enemy")
+                    {
+                        //Debug.Log(results[i].name);
+                        results[i].GetComponent<EnemyScript>().Stunned();
+                    }
+
+                }
+            }
         }
     }
 
