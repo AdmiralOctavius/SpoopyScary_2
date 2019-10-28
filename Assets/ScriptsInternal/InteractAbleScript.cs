@@ -56,7 +56,7 @@ public class InteractAbleScript : MonoBehaviour
 
     public void InteractObjectActivate()
     {
-        //Debug.Log("Got here");
+        Debug.Log("Got here in corpse");
         if (isTextObj){
             if(textPosition < TextBlockText.Length)
             {

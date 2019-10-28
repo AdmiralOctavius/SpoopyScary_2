@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using UnityEngine.SceneManagement;
 public class EnemyScript : MonoBehaviour
 {
 
@@ -31,16 +31,19 @@ public class EnemyScript : MonoBehaviour
     float distance;
     public Animator animatorZombie;
 
-    bool ifMothMan = false;
+    public bool ifMothMan = false;
 
     int layerMask = 1 << 8;
 
+    bool playerSideRight;
+    Vector2 heading;
     // Start is called before the first frame update
     void Start()
     {
+        controller.Move(((-1 * moveSpeed) * Time.fixedDeltaTime), false, false, false);
         //Debug.Log(tag);
         //playerMask = LayerMask.GetMask("Player");
-        goingRightPath = true;
+        goingRightPath = false;
     }
 
     // Update is called once per frame
@@ -51,7 +54,7 @@ public class EnemyScript : MonoBehaviour
 
     private void FixedUpdate()
     {
-
+        /*
         if (!isStunned)
         {
             animatorZombie.SetBool("Walking", true);
@@ -62,7 +65,7 @@ public class EnemyScript : MonoBehaviour
             {
 
                 CheckForPlayer(true);
-
+                /*
                 if(check.collider != null)
                 {
                     Debug.Log("Tag of hit: " + check.collider.gameObject.tag);  
@@ -97,7 +100,9 @@ public class EnemyScript : MonoBehaviour
                         }
                     }
                 }
-                else if (goingRightPath)
+              
+
+                if (goingRightPath)
                 {
                     chasingPlayer = false;
                     
@@ -176,6 +181,70 @@ public class EnemyScript : MonoBehaviour
         {
             animatorZombie.SetBool("Walking", false);
         }
+    **/
+
+        if (!isStunned)
+        {
+            animatorZombie.SetBool("Walking", true);
+            if (chasingPlayer == false)
+            {
+                facingRight = controller.m_FacingRight;
+                if (facingRight)
+                {
+                    controller.Move(((1 * moveSpeed) * Time.fixedDeltaTime), false, false, false);
+                }
+                else
+                {
+                    controller.Move(((-1 * moveSpeed) * Time.fixedDeltaTime), false, false, false);
+                }
+
+            }
+            else
+            {
+                if (playerSideRight)
+                {
+                    controller.Move(((1 * moveSpeed) * Time.fixedDeltaTime), false, false, false);
+                }
+                else
+                {
+                    controller.Move(((-1 * moveSpeed) * Time.fixedDeltaTime), false, false, false);
+                }
+            }
+        }
+        else
+        {
+            animatorZombie.SetBool("Walking", false);
+        }
+    }
+
+    void OnCollisionEnter2D(Collision2D input)
+    {
+        Debug.Log(input.gameObject.name);
+        if(input.gameObject.tag == "Player")
+        {
+            Debug.Log("GotHere");
+            heading = transform.position - input.transform.position;
+            var distance = heading.magnitude;
+            var direction = heading / distance; // This is now the normalized direction.
+            if (direction.x >= 0)
+            {
+                playerSideRight = true;
+            }
+            else
+            {
+                playerSideRight = false;
+            }
+
+            if(distance <= 3)
+            {
+                if (!attackCooldown)
+                {
+                    StartCoroutine(Attack(input, true));
+
+                }
+            }
+
+        }
     }
 
     public void Stunned(float newStunTime)
@@ -215,10 +284,10 @@ public class EnemyScript : MonoBehaviour
 
     }
 
-    IEnumerator Attack(RaycastHit2D input,bool right)
+    IEnumerator Attack(Collision2D input,bool right)
     {
         
-        animatorZ   ombie.SetBool("Attack", true);
+        animatorZombie.SetBool("Attack", true);
         yield return new WaitForSeconds(1);
         GetComponent<AudioSource>().Play();
         if (right)
@@ -242,6 +311,10 @@ public class EnemyScript : MonoBehaviour
         animatorZombie.SetBool("Attack", false);
         yield return new WaitForSeconds(5);
         attackCooldown = false;
+        if (ifMothMan)
+        {
+            SceneManager.LoadScene(0);
+        }
     }
     IEnumerator StunnedWait()
     {

@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using UnityEngine.SceneManagement;
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -40,6 +40,11 @@ public class PlayerMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+
+        if (Input.GetButtonDown("Cancel"))
+        {
+            SceneManager.LoadScene(0);
+        }
         //controller.Move();
         if (!CameraUsed && !isTalking)
         {
@@ -147,7 +152,7 @@ public class PlayerMovement : MonoBehaviour
             //Debug.Log("Got to light fade function");
             if (lightCamera.GetComponent<UnityEngine.Experimental.Rendering.LWRP.Light2D>().intensity >= 0)
             {
-                Debug.Log(lightCamera.GetComponent<UnityEngine.Experimental.Rendering.LWRP.Light2D>().intensity);
+                //Debug.Log(lightCamera.GetComponent<UnityEngine.Experimental.Rendering.LWRP.Light2D>().intensity);
                 //Debug.Log("Got here in fixed update");
                 lightCamera.GetComponent<UnityEngine.Experimental.Rendering.LWRP.Light2D>().intensity -= 2.5f * Time.deltaTime;
                 currentLightIntensity = lightCamera.GetComponent<UnityEngine.Experimental.Rendering.LWRP.Light2D>().intensity;
